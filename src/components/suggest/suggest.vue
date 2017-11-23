@@ -1,5 +1,5 @@
 <template>
-  <div class="suggest">
+  <Scroll class="suggest" ref="suggest" :data="searchResult" :pullup="pullup" @scrollToEnd="searchMore">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="item in searchResult">
         <div class="icon">
@@ -10,20 +10,32 @@
           <p class="tag" v-html="getName(item)"></p>
         </div>
       </li>
+      <loading v-show="hasMore"></loading>
     </ul>
-  </div>
+    <div class="no-result-wrapper" v-show="!searchResult.length && !hasMore">
+      <no-result :text="text"></no-result>
+    </div>
+  </Scroll>
 </template>
 
 <script type="ecmascript-6">
   import {ERR_OK} from 'api/config.js';
   import {getSearchResult} from 'api/search.js';
-  import {singerFilter} from 'common/js/song.js';
+  import {createSong} from 'common/js/song.js';
+  import Scroll from 'base/scroll/scroll';
+  import NoResult from 'base/no-result/no-result';
+  import Loading from 'base/loading/loading';
+  const perPage = 20;
   const TYPE_SINGER = 2;
   export default {
     data () {
       return {
         page: 1,
-        searchResult: []
+        searchResult: [],
+        pullup: true,
+        totalNum: 0,
+        text: '抱歉，暂无搜索结果',
+        hasMore: true
       }
     },
     props: {
@@ -38,11 +50,20 @@
     },
     methods: {
       search (query, page, zhida) {
-        getSearchResult (this.query, this.page, this.showSinger).then((res) => {
+        this.page = 1;
+        this.hasMore = true;
+        this.$refs.suggest.scrollTo(0, 0);
+        getSearchResult (this.query, this.page, this.showSinger, perPage).then((res) => {
           if (res.code === ERR_OK) {
             this.searchResult = this.getResult(res.data);
+            this.totalNum = res.data.song.totalnum;
+            this.curNum = res.data.song.curnum;
+            console.log(this.totalNum + ',' + this.curNum);
           }
-        })
+          if (this.curNum + this.page * perPage >= this.totalNum) {
+            this.hasMore = false;
+          }
+        });
       },
       getResult (data) {
         let ret = [];
@@ -50,7 +71,7 @@
           ret.push({...data.zhida, ...{type: TYPE_SINGER}});
         }
         if (data.song.list) {
-          ret = ret.concat(data.song.list);
+          ret = ret.concat(this._normalizeSong(data.song.list));
         }
         return ret;
       },
@@ -65,14 +86,51 @@
         if (item.type === TYPE_SINGER) {
           return item.singername;
         } else {
-          return item.songname;
+          return item.name;
         }
       },
       getName (item) {
         if (item.type === TYPE_SINGER) {
           return `单曲: ${item.songnum} 专辑: ${item.albumnum}`;
         } else {
-          return singerFilter(item.singer);
+          return item.singer;
+        }
+      },
+      _normalizeSong (list) {
+        let ret = [];
+        list.forEach((musicData) => {
+          if (musicData.songid && musicData.albumid) {
+            ret.push(createSong(musicData));
+          }
+        });
+        return ret;
+      },
+      searchMore () {
+        /*
+        let pageNum = Math.ceil(this.totalNum / perPage);
+        console.log(pageNum);
+        if (this.page >= pageNum) {
+          return;
+        } else {
+          this.page += 1;
+          console.log(this.page);
+          this.search (this.query, this.page);
+        }
+        */
+        if (this.curNum + this.page * perPage >= this.totalNum) {
+          this.hasMore = false;
+          return;
+        } else {
+          this.page ++;
+          this.hasMore = true;
+          getSearchResult (this.query, this.page, this.showSinger, perPage).then((res) => {
+            if (res.code === ERR_OK) {
+              this.searchResult = this.searchResult.concat(this.getResult(res.data));
+              this.totalNum = res.data.song.totalnum;
+              this.curNum = res.data.song.curnum;
+              console.log(this.totalNum + ',' + this.curNum);
+            }
+          });
         }
       }
     },
@@ -80,6 +138,11 @@
       query (newQuery) {
         this.search(newQuery);
       }
+    },
+    components: {
+      Scroll,
+      NoResult,
+      Loading
     }
   };
 </script>
@@ -87,20 +150,39 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import '~common/style/variable.styl'
   .suggest
-    margin-top: 10px
+    position: fixed
+    top: 170px
+    bottom: 0
+    left: 0
+    width: 100%
+    background: $color-background
+    overflow: hidden
     .suggest-list
+      margin-left: 16px
       .suggest-item
+        display: flex
         height: 40px
+        margin-bottom: 8px
         list-style: none
         .icon
           display: inline-block
+          line-height: 40px
+          flex: 0 0 32px
+          width: 32px
           color: $color-text-l
         .content
-          display: inline-block
+          display: flex
+          flex: 1
+          flex-direction: column
+          justify-content: center
+          align-content: center
+          overflow： hidden
           .text
+            flex: 1
             color: $color-text-l
             font-size: $font-size-medium
           .tag
+            flex: 1
             color: $color-text-d
             font-size: $font-size-small
 </style>

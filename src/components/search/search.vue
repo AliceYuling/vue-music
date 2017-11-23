@@ -64,6 +64,7 @@
   .search
     .search-box-wrapper
       margin: 20px
+      background: $color-background
     .hotkey-wrapper
       position: fixed
       top: 178px

@@ -23,6 +23,10 @@
       listenScroll: {
         Type: Boolean,
         default: false
+      },
+      pullup: {
+        type: Boolean,
+        default: false
       }
     },
     mounted () {
@@ -45,6 +49,13 @@
           let me = this;
           this.scroll.on('scroll', (pos) => {
             me.$emit('scroll', pos);
+          })
+        }
+        if (this.pullup) {                                    // 上拉刷新， maxScrollY 为scroll 最大横向滚动位置
+          this.scroll.on('scrollEnd', () => {
+            if (this.scroll.y <= this.scroll.maxScrollY + 50) {
+              this.$emit('scrollToEnd');
+            }
           })
         }
       },

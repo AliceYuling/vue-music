@@ -89,6 +89,7 @@
         padding-right: 18px
         .rank-item
           display: flex
+          height: 100px
           padding-top: 18px
           &.last-child
             padding-bottom: 18px
@@ -97,6 +98,7 @@
             width: 100px
             height: 100px
           .song-list
+            padding: 10px 4px 10px 4px
             flex: 1
             display: flex
             flex-direction: column
@@ -104,7 +106,7 @@
             padding-left: 20px
             background: $color-background-d
             .song-item
-              line-height: 26px
+              flex: 1
               list-style: none
               color: $color-text-l
               font-size: $font-size-small
