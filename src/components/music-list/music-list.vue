@@ -89,7 +89,6 @@
         this.posY = pos.y; 
       },
       selectSong (item, index) {
-        console.log(index);
         this.selectPlay({
           list: this.songs, 
           index
@@ -209,8 +208,8 @@
       bottom: 0
       background: $color-background
       // overflow: hidden
-      .song-list-wrapper
-        padding: 20px 30px
+      // .song-list-wrapper
+       // padding: 20px 30px
       .loading-container
         position: absolute
         width: 100%

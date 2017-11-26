@@ -61,6 +61,9 @@
         </div>
       </div>
     </div>
+    <div class="playlist-wrapper">
+      <playlist v-show="showList"></playlist>
+    </div>
     <div class="mini-player" v-show="!fullScreen" @click="open">
       <div class="mini-image">
         <img class="image" :src="currentSong.image">
@@ -74,7 +77,7 @@
           <i :class="miniIconControl" @click.stop.prevent="togglePlaying"></i>
         </progress-circle>
       </div>
-      <div class="control" @click="showPlayList">
+      <div class="control" @click.stop.prevent="showPlayList">
         <i class="icon-playlist"></i>
       </div>
     </div>
@@ -82,7 +85,7 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script type="ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex';
   import ProgressBar from 'base/progress-bar/progress-bar';
   import ProgressCircle from 'base/progress-circle/progress-circle';
@@ -91,6 +94,7 @@
   import Lyric from 'lyric-parser';
   import Scroll from 'base/scroll/scroll';
   import {prefixStyle} from 'common/js/dom';
+  import Playlist from 'components/playlist/playlist';
 
   const transform = prefixStyle('transform');
   // const LINE_HIEGHT = 20;
@@ -103,7 +107,8 @@
         currentLyric: null,
         currentLine: 0,
         currentShow: 'cd',
-        playingLyric: ''
+        playingLyric: '',
+        showList: false
       };
     },
     computed: {
@@ -143,7 +148,7 @@
         this.setFullScreen(true);
       },
       showPlayList () {
-        this.setFullScreen(true);
+        this.showList = true;
       },
       togglePlaying () {
         this.setPlaying(!this.playing);
@@ -204,18 +209,12 @@
       changeMode () {
         let modeIndex = (this.mode + 1) % 3;
         this.setPlayMode(modeIndex);
-        console.log(this.mode);
         let list = null;
         if (this.mode === playMode.random) {                                      // 随机播放
-          console.log('random');
           list = getRandomArray(this.playList);
-          console.log(this.sequenceList);
         } else {
-          console.log('sequence');
           list = this.sequenceList;
-          console.log(list);
         }
-        console.log(list);
         this.setPlayList(list);
         this.resetCurrentIndex(list, this.currentSong);
       },
@@ -264,7 +263,7 @@
           if (this.playing) {
             this.currentLyric.play();
           }
-          console.log(this.currentLyric);
+          // console.log(this.currentLyric);
         }).catch(() => {
           this.currentLyric = null;
           this.playingLyric = '';
@@ -272,10 +271,9 @@
       },
       handleLyric ({lineNum, txt}) {
         this.currentLine = lineNum;
-        console.log(this.currentLine);
+        // console.log(this.currentLine);
         if (lineNum > 5) {
           let lineEl = this.$refs.lyricLine[lineNum - 5];
-          console.log(lineEl);
           this.$refs.lyricList.scrollToElement(lineEl, 1000);
         } else {
           this.$refs.lyricList.scrollTo(0, 0, 1000);
@@ -294,12 +292,12 @@
         const touch = e.touches[0];
         const deltaX = touch.pageX - this.touch.startX;
         const deltaY = touch.pageY - this.touch.startY;
-        console.log('deltaX' + deltaX);
-        console.log('deltaY' + deltaY);
+        // console.log('deltaX' + deltaX);
+        // console.log('deltaY' + deltaY);
         if (Math.abs(deltaY) > Math.abs(deltaX)) {                // 纵轴偏移大于横轴偏移时，不进行左右移动
           return;
         }
-        console.log('window' + window.innerWidth);
+        // console.log('window' + window.innerWidth);
         const left = this.currentShow === 'cd' ? 0 : -window.innerWidth;
         const width = Math.min(0, Math.max(-window.innerWidth, left + deltaX));
         this.touch.percent = Math.abs(width / window.innerWidth);
@@ -366,7 +364,8 @@
     components: {
       ProgressBar,
       ProgressCircle,
-      Scroll
+      Scroll,
+      Playlist
     }
   };
 </script>
@@ -529,6 +528,13 @@
               display: inline-block
             .icon-favorite
               display: inline-block
+    .playlist-wrapper
+      position: fixed
+      width: 100%
+      bottom: 63px
+      height: 500px
+      z-index: 200
+      overflow: hidden
     .mini-player
       display: flex
       position: fixed

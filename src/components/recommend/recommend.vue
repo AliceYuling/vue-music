@@ -92,6 +92,15 @@
         setDisc: 'SET_DISC'
       })
     },
+    watch: {
+      discList (newList) {
+        setTimeout(() => {
+          this.$nextTick(() => {
+            this.$refs.scroll.refresh();
+          });
+        }, 20);
+      }
+    },
     components: {
       Slider,
       Scroll,

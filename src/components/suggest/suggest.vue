@@ -1,7 +1,7 @@
 <template>
-  <Scroll class="suggest" ref="suggest" :data="searchResult" :pullup="pullup" @scrollToEnd="searchMore">
+  <Scroll class="suggest" ref="suggest" :data="searchResult" :pullup="pullup" @scrollToEnd="searchMore" :beforeScroll="beforeScroll" @onScroll="onScroll">
     <ul class="suggest-list">
-      <li class="suggest-item" v-for="item in searchResult">
+      <li class="suggest-item" v-for="item in searchResult" @click="selectItem(item)">
         <div class="icon">
           <i :class="getClsByType(item)"></i>
         </div>
@@ -25,6 +25,9 @@
   import Scroll from 'base/scroll/scroll';
   import NoResult from 'base/no-result/no-result';
   import Loading from 'base/loading/loading';
+  import Singer from 'common/js/singer.js';
+  import {mapMutations} from 'vuex';
+  import {mapActions} from 'vuex';
   const perPage = 20;
   const TYPE_SINGER = 2;
   export default {
@@ -35,7 +38,8 @@
         pullup: true,
         totalNum: 0,
         text: '抱歉，暂无搜索结果',
-        hasMore: true
+        hasMore: true,
+        beforeScroll: true
       }
     },
     props: {
@@ -132,7 +136,29 @@
             }
           });
         }
-      }
+      },
+      selectItem (item) {
+        if (item.type === TYPE_SINGER) {
+          const singer = new Singer ({
+            id: item.singermid,
+            name: item.singername
+          });
+          this.$router.push(`singer/${singer.id}`);
+          this.setSinger(singer);
+        } else {
+          this.insertSong(item);
+        }
+        this.$emit('select', item);
+      },
+      onScroll () {
+        this.$emit('scrollSuggest');
+      },
+      ...mapMutations({
+        'setSinger': 'SET_SINGER'
+      }),
+      ...mapActions([
+        'insertSong'
+      ])
     },
     watch: {
       query (newQuery) {

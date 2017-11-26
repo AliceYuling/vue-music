@@ -54,9 +54,10 @@
   @import '~common/style/mixin.styl'
   @import '~common/style/variable.styl'
   .song-list
+    padding: 20px 30px
     .song-item
       width: 100%
-      height: 58px
+      height: 48px
       padding-top: 10px
       list-style: none
       .rank

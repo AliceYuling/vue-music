@@ -1,6 +1,7 @@
 import * as types from './mutation-types';
 import {playMode} from 'common/js/config';
 import {getRandomArray} from 'common/js/utils';
+import {saveSearch, deleteOne, clearAll} from 'common/js/cache';
 
 function findIndex (list, song) {
   return list.findIndex((item) => {
@@ -29,4 +30,61 @@ export const randomPlay = function ({commit}, {list}) {
   commit(types.SET_PLAYING_STATE, true);
   commit(types.SET_CURRENT_INDEX, 0);
   commit(types.SET_FULLSCREEN_STATE, true);
+};
+
+export const insertSong = function ({commit, state}, song) {
+  console.log(state.playList);
+  let pList = state.playList.slice(0);
+  let curIndex = state.currentIndex;
+  let seqList = state.sequenceList.slice(0);
+  console.log('pList');
+  console.log(pList);
+  // let curSong = state.playList[curIndex] || {};
+
+  // 判断歌曲是否已存在于播放列表中
+  let sIndex = findIndex(pList, song);
+  console.log('sIndex:' + sIndex);
+
+  curIndex++;
+  pList.splice(curIndex, 0, song);
+  console.log('pList after');
+  console.log(pList);
+  // 若歌曲在播放列表中， 删除该歌曲原本的位置
+  if (sIndex > -1) {
+    if (sIndex < curIndex) {
+      pList.splice(sIndex, 1);
+      curIndex--;
+    } else {
+      pList.splice(sIndex + 1, 1);
+    }
+  }
+
+  let cIndex = state.currentIndex;
+  let fIndex = findIndex(seqList, song);
+  seqList.splice(cIndex + 1, 0, song);
+  if (fIndex > -1) {
+    if (fIndex < cIndex + 1) {
+      seqList.splice(fIndex, 1);
+    } else {
+      seqList.splice(fIndex + 1, 1);
+    }
+  }
+
+  commit(types.SET_PLAY_LIST, pList);
+  commit(types.SET_SEQUENCE_LIST, seqList);
+  commit(types.SET_CURRENT_INDEX, curIndex);
+  commit(types.SET_PLAYING_STATE, true);
+  commit(types.SET_FULLSCREEN_STATE, true);
+};
+
+export const saveSearchHistory = function ({commit, state}, query) {
+  commit(types.SET_SEARCH_HISTORY, saveSearch(query));
+};
+
+export const deleteOneHistory = function ({commit, state}, item) {
+  commit(types.SET_SEARCH_HISTORY, deleteOne(item));
+};
+
+export const clearHistory = function ({commit, state}) {
+  commit(types.SET_SEARCH_HISTORY, clearAll());
 };

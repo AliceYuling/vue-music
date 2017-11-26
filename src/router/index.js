@@ -47,7 +47,11 @@ export default new Router({
     {
       path: '/search',
       name: 'search',
-      component: Search
+      component: Search,
+      cihldren: [{
+        path: ':id',
+        component: SingerDetail
+      }]
     }
   ]
 });
