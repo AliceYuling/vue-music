@@ -51,6 +51,7 @@
     border-radius: 6px
     background: $color-highlight-background
     .icon-search
+      flex: 0 0 20px
       font-size: $font-size-large-x
       color: $color-background
     .box
@@ -63,6 +64,9 @@
       color: $color-text-l
       font-family: 'Microsoft YaHei', 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light', arial, sans-serif, 'Droid Sans Fallback'
     .icon-dismiss
+      flex: 0 0 20px
+      width: 20px
+      text-align: center
       font-size: $font-size-medium
       color: $color-background
 </style>

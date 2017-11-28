@@ -1,7 +1,7 @@
 <template>
   <div class="search-list">
     <ul class="list">
-      <li class="search-item" v-for="item in searchList">
+      <li class="search-item" v-for="item in searchList" @click="addQuery(item)">
         <span class="text">{{item}}</span>
         <span class="icon-wrapper" @click="deleteOne(item)">
           <i class="icon icon-delete"></i>
@@ -24,6 +24,9 @@
     methods: {
       deleteOne (item) {
         this.$emit('deleteOne', item);
+      },
+      addQuery (item) {
+        this.$emit('addQuery', item);
       }
     }
   };
@@ -33,6 +36,7 @@
   @import '~common/style/variable.styl';
   .search-list
     .list
+      padding: 10px 30px
       .search-item
         display: flex
         height: 32px

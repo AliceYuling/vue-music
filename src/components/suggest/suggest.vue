@@ -1,7 +1,7 @@
 <template>
   <Scroll class="suggest" ref="suggest" :data="searchResult" :pullup="pullup" @scrollToEnd="searchMore" :beforeScroll="beforeScroll" @onScroll="onScroll">
     <ul class="suggest-list">
-      <li class="suggest-item" v-for="item in searchResult" @click="selectItem(item)">
+      <li class="suggest-item" v-for="item in searchResult" @click="selectItem(item)" :class="{'hideSinger': hideSinger(item)}">
         <div class="icon">
           <i :class="getClsByType(item)"></i>
         </div>
@@ -50,6 +50,10 @@
       showSinger: {
         type: Boolean,
         default: true
+      },
+      hideZhida:{
+        type: Boolean,
+        default: false
       }
     },
     methods: {
@@ -68,6 +72,9 @@
             this.hasMore = false;
           }
         });
+      },
+      hideSinger (item) {
+        return (item.type === TYPE_SINGER) && this.hideZhida;
       },
       getResult (data) {
         let ret = [];
@@ -190,6 +197,8 @@
         height: 40px
         margin-bottom: 8px
         list-style: none
+        &.hideSinger
+          display: none
         .icon
           display: inline-block
           line-height: 40px

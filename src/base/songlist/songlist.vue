@@ -33,7 +33,6 @@
         return `${song.singer} · ${song.album}`;
       },
       select (song, index) {
-        console.log('select in songlist');
         this.$emit('select', song, index);
       },
       getRankCls (index) {
@@ -54,7 +53,7 @@
   @import '~common/style/mixin.styl'
   @import '~common/style/variable.styl'
   .song-list
-    padding: 20px 30px
+    padding: 10px 30px
     .song-item
       width: 100%
       height: 48px

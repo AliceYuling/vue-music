@@ -8,7 +8,7 @@
             <div class="hot-key">
               <h3 class="title">热门搜索</h3>
               <ul class="hotkey-list">
-                <li class="hotkey-item" v-for="item in hotKey" @click="addQuery(item)">
+                <li class="hotkey-item" v-for="item in hotKey" @click="addQuery(item.k)">
                   <span class="tag">{{item.k}}</span>
                 </li>
               </ul>
@@ -21,7 +21,7 @@
                 <i class="icon icon-clear"></i>
               </span>
             </h2>
-            <search-list :searchList="searchHistory" @deleteOne="deleteOneHistory"></search-list>
+            <search-list :searchList="searchHistory" @deleteOne="deleteOneHistory" @addQuery="addQuery"></search-list>
           </div>
         </div>
       </scroll>
@@ -77,7 +77,7 @@
         })
       },
       addQuery (item) {
-        this.setQuery(item.k);
+        this.setQuery(item);
       },
       setQuery (query) {
         this.$refs.searchBox.setQuery(query);

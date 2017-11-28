@@ -3,6 +3,9 @@ import storage from 'good-storage';
 const SEARCH_KEY = '__search__';
 const MAX_SEARCH = 15;
 
+const PLAY_KEY = '__play__';
+const MAX_PLAY = 15;
+
 export function saveSearch (query) {
   let list = storage.get(SEARCH_KEY, []);
   let sIndex = list.findIndex((item) => {
@@ -40,7 +43,36 @@ export function deleteOne (item) {
   return list;
 };
 
+// 清除搜索历史
 export function clearAll () {
   storage.set(SEARCH_KEY, []);
   return [];
+};
+
+// 处理最近播放
+export function loadPlay () {
+  return storage.get(PLAY_KEY, []);
+};
+
+export function addPlay (song) {
+  let latest = storage.get(PLAY_KEY, []);
+  let sIndex = latest.findIndex((item) => {
+    return song.id === item.id;
+  });
+
+  // 若歌曲不存在于当前播放列表中， 则插入到队列头部
+  // 否则删除原本的位置并插入到队列头部
+  if (sIndex < 0) {
+    latest.unshift(song);
+  } else {
+    latest.splice(sIndex, 1);
+    latest.unshift(song);
+  }
+
+  if (latest.length > MAX_PLAY) {
+    latest.pop();
+  }
+
+  storage.set(PLAY_KEY, latest);
+  return latest;
 };

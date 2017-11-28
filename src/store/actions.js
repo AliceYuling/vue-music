@@ -1,7 +1,7 @@
 import * as types from './mutation-types';
 import {playMode} from 'common/js/config';
 import {getRandomArray} from 'common/js/utils';
-import {saveSearch, deleteOne, clearAll} from 'common/js/cache';
+import * as cache from 'common/js/cache';
 
 function findIndex (list, song) {
   return list.findIndex((item) => {
@@ -78,13 +78,63 @@ export const insertSong = function ({commit, state}, song) {
 };
 
 export const saveSearchHistory = function ({commit, state}, query) {
-  commit(types.SET_SEARCH_HISTORY, saveSearch(query));
+  commit(types.SET_SEARCH_HISTORY, cache.saveSearch(query));
 };
 
 export const deleteOneHistory = function ({commit, state}, item) {
-  commit(types.SET_SEARCH_HISTORY, deleteOne(item));
+  commit(types.SET_SEARCH_HISTORY, cache.deleteOne(item));
 };
 
 export const clearHistory = function ({commit, state}) {
-  commit(types.SET_SEARCH_HISTORY, clearAll());
+  commit(types.SET_SEARCH_HISTORY, cache.clearAll());
+};
+
+// 从播放列表中删除一首歌
+export const deleteSong = function ({commit, state}, song) {
+  let pList = state.playList.slice();
+  let seqList = state.sequenceList.slice();
+  let curIndex = state.currentIndex;
+
+  let pIndex = findIndex(pList, song);
+  let sIndex = findIndex(seqList, song);
+
+  // 从顺序列表中删除
+  seqList.splice(sIndex, 1);
+
+  // 从播放列表中删除
+  pList.splice(pIndex, 1);
+
+  // 若当前播放曲目在要删除的曲目之后
+  if (pIndex === pList.length) {
+    curIndex = 0;
+  }
+  if (pIndex < curIndex) {
+    curIndex--;
+  }
+
+  commit(types.SET_PLAYING_STATE, state.playing);
+  commit(types.SET_PLAY_LIST, pList);
+  commit(types.SET_SEQUENCE_LIST, seqList);
+  commit(types.SET_CURRENT_INDEX, curIndex);
+
+  if (!state.playList.length) {
+    commit(types.SET_PLAYING_STATE, false);
+    commit(types.SET_CURRENT_INDEX, -1);
+  } else {
+    commit(types.SET_PLAYING_STATE, true);
+  }
+};
+
+// 清空播放列表
+export const clearPlayList = function ({commit, state}) {
+  commit(types.SET_FULLSCREEN_STATE, false);
+  commit(types.SET_PLAYING_STATE, false);
+  commit(types.SET_PLAY_LIST, []);
+  commit(types.SET_SEQUENCE_LIST, []);
+  commit(types.SET_CURRENT_INDEX, -1);
+};
+
+// 在最近播放列表中添加一首歌曲
+export const savePlayHistory = function ({commit, state}, song) {
+  commit(types.SET_PLAY_HISTORY, cache.addPlay(song));
 };

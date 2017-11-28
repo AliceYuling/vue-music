@@ -61,8 +61,8 @@
         </div>
       </div>
     </div>
-    <div class="playlist-wrapper">
-      <playlist v-show="showList"></playlist>
+    <div class="playlist-wrapper" v-show="showList">
+      <playlist @closePlayList="closePlayList"></playlist>
     </div>
     <div class="mini-player" v-show="!fullScreen" @click="open">
       <div class="mini-image">
@@ -86,7 +86,7 @@
 </template>
 
 <script type="ecmascript-6">
-  import {mapGetters, mapMutations} from 'vuex';
+  import {mapGetters, mapMutations, mapActions} from 'vuex';
   import ProgressBar from 'base/progress-bar/progress-bar';
   import ProgressCircle from 'base/progress-circle/progress-circle';
   import {getRandomArray} from 'common/js/utils';
@@ -149,6 +149,10 @@
       },
       showPlayList () {
         this.showList = true;
+      },
+      closePlayList () {
+        console.log('close play list');
+        this.showList = false;
       },
       togglePlaying () {
         this.setPlaying(!this.playing);
@@ -335,20 +339,26 @@
         setCurrentIndex: 'SET_CURRENT_INDEX',
         setPlayMode: 'SET_MODE',
         setPlayList: 'SET_PLAY_LIST'
-      })
+      }),
+      ...mapActions([
+        'savePlayHistory'
+      ])
     },
     watch: {
       currentSong (newSong, oldSong) {
-        if (newSong.id === oldSong.id) {
-          return;
-        }
-        if (this.currentLyric) {
-          this.currentLyric.stop();
-        }
-        this.$nextTick(() => {
-          this.$refs.audio.play();
-          this.getLyric();
-        });
+        if (this.playList.length) {
+          if (newSong.id === oldSong.id) {
+            return;
+          }
+          if (this.currentLyric) {
+            this.currentLyric.stop();
+          }
+          this.savePlayHistory(newSong);
+          this.$nextTick(() => {
+            this.$refs.audio.play();
+            this.getLyric();
+          });
+        } 
       },
       playing (newPlaying) {
         const audio = this.$refs.audio;
@@ -533,7 +543,7 @@
       width: 100%
       bottom: 63px
       height: 500px
-      z-index: 200
+      z-index: 150
       overflow: hidden
     .mini-player
       display: flex
