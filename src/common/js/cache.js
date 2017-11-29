@@ -12,7 +12,7 @@ export function saveSearch (query) {
     return item === query;
   });
 
-  console.log('sIndex=' + sIndex);
+  // console.log('sIndex=' + sIndex);
   // 当前搜索在历史中是第一位，则什么都不做
   if (sIndex === 0) {
     list = list.slice();
@@ -55,24 +55,31 @@ export function loadPlay () {
 };
 
 export function addPlay (song) {
+  console.log('cache add play');
+  console.log(song);
+  // storage.set(PLAY_KEY, []);
   let latest = storage.get(PLAY_KEY, []);
+  console.log('before latest');
+  console.log(latest);
   let sIndex = latest.findIndex((item) => {
     return song.id === item.id;
   });
 
+  console.log('sIndex=' + sIndex);
+  console.log(latest[sIndex]);
   // 若歌曲不存在于当前播放列表中， 则插入到队列头部
   // 否则删除原本的位置并插入到队列头部
-  if (sIndex < 0) {
-    latest.unshift(song);
-  } else {
+  if (sIndex > 0) {
     latest.splice(sIndex, 1);
-    latest.unshift(song);
   }
 
+  latest.unshift(song);
   if (latest.length > MAX_PLAY) {
     latest.pop();
   }
 
+  console.log('after latest');
+  console.log(latest);
   storage.set(PLAY_KEY, latest);
   return latest;
 };

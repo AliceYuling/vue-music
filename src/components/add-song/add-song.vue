@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="suggest-wrapper">
-      <suggest v-show="query" :query="query" @scrollSuggest="onBlur" @select="selectSong" :hideZhida="hideZhida"></suggest>
+      <suggest v-show="query" :query="query" @scrollSuggest="onBlur" @selectSuggest="selectSong" :hideZhida="hideZhida"></suggest>
     </div>
   </div>
 </template>
@@ -83,16 +83,16 @@
         this.deleteOneHistory(item);
       },
       selectSong (item, index) {
-        this.savePlayHistory(item);
-        this.selectPlay({
-          list: this.playHistory,
-          index
-        });
+        this.insertSong(item);
+        // this.savePlayHistory(item);
+        this.saveSearchHistory(item.name);
       },
       ...mapActions([
         'deleteOneHistory',
         'savePlayHistory',
-        'selectPlay'
+        'selectPlay',
+        'insertSong',
+        'saveSearchHistory'
       ])
     },
     components: {

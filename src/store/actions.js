@@ -32,23 +32,24 @@ export const randomPlay = function ({commit}, {list}) {
   commit(types.SET_FULLSCREEN_STATE, true);
 };
 
+// 添加歌曲到播放列表中
 export const insertSong = function ({commit, state}, song) {
   console.log(state.playList);
   let pList = state.playList.slice(0);
   let curIndex = state.currentIndex;
   let seqList = state.sequenceList.slice(0);
-  console.log('pList');
-  console.log(pList);
+  // console.log('pList');
+  // console.log(pList);
   // let curSong = state.playList[curIndex] || {};
 
   // 判断歌曲是否已存在于播放列表中
   let sIndex = findIndex(pList, song);
-  console.log('sIndex:' + sIndex);
+  // console.log('sIndex:' + sIndex);
 
   curIndex++;
   pList.splice(curIndex, 0, song);
-  console.log('pList after');
-  console.log(pList);
+  // console.log('pList after');
+  // console.log(pList);
   // 若歌曲在播放列表中， 删除该歌曲原本的位置
   if (sIndex > -1) {
     if (sIndex < curIndex) {
@@ -136,5 +137,7 @@ export const clearPlayList = function ({commit, state}) {
 
 // 在最近播放列表中添加一首歌曲
 export const savePlayHistory = function ({commit, state}, song) {
+  console.log('song in actions');
+  console.log(song);
   commit(types.SET_PLAY_HISTORY, cache.addPlay(song));
 };

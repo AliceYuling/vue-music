@@ -151,7 +151,7 @@
         this.showList = true;
       },
       closePlayList () {
-        console.log('close play list');
+        // console.log('close play list');
         this.showList = false;
       },
       togglePlaying () {
@@ -262,6 +262,8 @@
         return `${min}:${sec}`;
       },
       getLyric () {
+        console.log('getLyric');
+        console.log(this.currentSong);
         this.currentSong.getLyric().then((lyric) => {
           this.currentLyric = new Lyric(lyric, this.handleLyric);
           if (this.playing) {
@@ -346,6 +348,8 @@
     },
     watch: {
       currentSong (newSong, oldSong) {
+        console.log('newSong');
+        console.log(newSong);
         if (this.playList.length) {
           if (newSong.id === oldSong.id) {
             return;

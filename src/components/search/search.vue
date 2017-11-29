@@ -25,7 +25,7 @@
           </div>
         </div>
       </scroll>
-      <suggest v-show="query" :query="query" @scrollSuggest="onBlur" @select="saveSearch"></suggest>
+      <suggest v-show="query" :query="query" @scrollSuggest="onBlur" @selectSuggest="saveSearch"></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -93,7 +93,8 @@
           this.saveSearchHistory(item.singername);
         } else {
           this.saveSearchHistory(item.name);
-        } 
+        }
+        this.savePlayHistory(item);
       },
       handlePlayList (playList) {
         const bottom = playList.length > 0 ? '63px' : '';
@@ -103,7 +104,8 @@
       ...mapActions([
         'saveSearchHistory',
         'deleteOneHistory',
-        'clearHistory'
+        'clearHistory',
+        'savePlayHistory'
       ])
     },
     watch: {

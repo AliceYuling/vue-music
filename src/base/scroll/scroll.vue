@@ -88,7 +88,7 @@
       data () {                                   // 监测数据变化并刷新
         setTimeout(() => {
           this.refresh();
-          console.log('refresh data');
+          // console.log('refresh data');
         }, 20);
       }
     }

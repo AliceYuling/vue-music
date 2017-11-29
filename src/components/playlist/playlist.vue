@@ -4,7 +4,7 @@
       <span class="mode-control">
         <i class="icon" :class="modeCtrl"></i>
       </span>
-      <span class="text">顺序播放</span>
+      <span class="text" v-html="modeText"></span>
       <span class="clear" @click="clearList">
         <i class="icon icon-clear"></i>
       </span>
@@ -15,9 +15,9 @@
           <i class="current" :class="getCurrentIcon(item)"></i>
           <span class="song-name">{{item.name}}</span>
           <span class="like" @click.stop.prevent="toggleLike(index)">
-            <i class="icon" :class="favCtrl(index)"></i>
+            <i class="icon" :class="getFavIcon(index)"></i>
           </span>
-          <span class="delete-song" @click.stop.prevent="deleteOne(item)">
+          <span class="delete-song" @click.stop.prevent="deleteOne(item,index)">
             <i class="icon icon-delete"></i>
           </span>
         </li>
@@ -58,7 +58,7 @@
     data () {
       return {
         showList: true,
-        likeSong: false,
+        likeSong: [],
         currentLike: -1,
         showAdd: false
       };
@@ -66,6 +66,9 @@
     computed: {
       modeCtrl () {
         return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.random ? 'icon-random' : 'icon-loop';
+      },
+      modeText () {
+        return this.mode === playMode.sequence ? '顺序播放' : this.mode === playMode.random ? '随机播放' : '循环播放';
       },
       ...mapGetters([
         'sequenceList',
@@ -82,8 +85,17 @@
         this.$emit('closePlayList');
       },
       toggleLike (index) {
-        this.likeSong = !this.likeSong;
-        this.currentLike = index;
+        if (!this.likeSong.length) {
+          let len = this.sequenceList.length;
+          for (let i = 0; i < len; i++) {
+            this.likeSong.push(false);
+          }
+        }
+        this.likeSong[index] = !this.likeSong[index];
+        console.log(this.likeSong);
+      },
+      getFavIcon (index) {
+        return this.likeSong[index] ? 'icon-favorite' : 'icon-not-favorite';
       },
       getCurrentIcon (item) {
         if (this.currentSong.id === item.id) {
@@ -91,9 +103,6 @@
         } else {
           return '';
         }
-      },
-      favCtrl (index) {
-        return this.likeSong ? 'icon-favorite' : 'icon-not-favorite';
       },
       addSong () {
         console.log('addsong');
@@ -109,12 +118,14 @@
       closeAdd () {
         this.showAdd = false;
       },
-      deleteOne (item) {
+      deleteOne (item, index) {
         this.deleteSong(item);
+        this.likeSong.splice(index, 1);
       },
       clearList () {
         this.clearPlayList();
         this.$emit('closePlayList');
+        this.likeSong = [];
       },
       selectSong (item, index) {
         console.log('select in playlist');

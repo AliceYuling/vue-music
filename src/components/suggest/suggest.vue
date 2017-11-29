@@ -155,7 +155,7 @@
         } else {
           this.insertSong(item);
         }
-        this.$emit('select', item);
+        this.$emit('selectSuggest', item);
       },
       onScroll () {
         this.$emit('scrollSuggest');
