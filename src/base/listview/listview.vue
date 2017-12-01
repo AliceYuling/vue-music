@@ -146,7 +146,7 @@
             this.currentIndex = i;
             // console.log(this.currentIndex);
             this.diff = listHeight[i + 1] + newY;
-            console.log(this.diff);
+            // console.log(this.diff);
             return;
           }
         }
@@ -154,13 +154,12 @@
         this.currentIndex = listHeight.length - 2;
       },
       diff (newDiff) {
-        console.log('newdiff');
+        // console.log('newdiff');
         let fixedTop = (newDiff > 0 && newDiff < TITLE_HEIGHT) ? newDiff - TITLE_HEIGHT : 0;
-        console.log('fixedTop:' + this.fixedTop);
+        // console.log('fixedTop:' + this.fixedTop);
         if (this.fixedTop === fixedTop) {
           return;
         }
-        console.log('hello');
         this.fixedTop = fixedTop;
         this.$refs.fixedtitle.style.transform = `translate3d(0, ${this.fixedTop}px, 0)`;
       }

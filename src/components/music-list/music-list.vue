@@ -116,7 +116,7 @@
         let translateHeight = Math.max(newY, this.minTranslateY);
         let scalePercent = Math.abs(newY / this.imageHeight);
         this.$refs.layer.style[transform] = `translate3d(0,${translateHeight}px,0)`;
-        console.log(this.tranform);
+        // console.log(this.tranform);
         if (newY > 0) {
           scale = 1 + scalePercent;
           zIndex = 10;

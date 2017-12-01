@@ -36,6 +36,7 @@
   import Scroll from 'base/scroll/scroll';
   import SongList from 'base/songlist/songlist';
   import Suggest from 'components/suggest/suggest';
+  import Song from 'common/js/song';
   export default {
     data () {
       return {
@@ -83,7 +84,7 @@
         this.deleteOneHistory(item);
       },
       selectSong (item, index) {
-        this.insertSong(item);
+        this.insertSong(new Song(item));
         // this.savePlayHistory(item);
         this.saveSearchHistory(item.name);
       },

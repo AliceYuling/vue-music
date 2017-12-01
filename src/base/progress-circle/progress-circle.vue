@@ -1,8 +1,8 @@
 <template>
   <div class="progress-circle">
-    <svg :width="radius" :height="radius" viewbox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" :r="radius" stroke="(255, 255, 255, 0.3)" stroke-width="2" fill="transparent"/>
-      <circle cx="50" cy="50" :r="radius" stroke="#ffcd32" stroke-width="2" fill="transparent" stroke-dasharrays="100"/>
+    <svg :width="64" :height="64" viewbox="-32 -32 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="23.8" cy="34" :r="radius" stroke="rgba(255, 255, 255, 0.3)" stroke-width="3" fill="transparent"/>
+      <circle cx="23.8" cy="34" :r="radius" stroke="#ffcd32" stroke-width="3" fill="transparent" stroke-dasharrays="100"/>
     </svg>
     <slot></slot>
   </div>
@@ -24,6 +24,11 @@
   
   .progress-circle
     position: relative
-    circle
-      stroke-width: 2px
+    svg
+      display: block
+      position: absolute
+      top: 0
+      left: 0
+      stroke-width: 3px
+      z-index: 200
 </style>

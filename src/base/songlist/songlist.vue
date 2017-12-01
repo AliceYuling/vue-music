@@ -6,8 +6,8 @@
           <span :class="getRankCls(index)">{{getRankText(index)}}</span>
         </div>
         <div class="content">
-          <h2 class="title">{{song.name}}</h2>
-          <p class="desc">{{songDesc(song)}}</p>
+          <h2 class="title" v-html="song.name"></h2>
+          <p class="desc" v-html="songDesc(song)"></p>
         </div>
       </li>
     </ul>
@@ -55,12 +55,13 @@
   .song-list
     padding: 10px 30px
     .song-item
-      width: 100%
+      display: flex
       height: 48px
       padding-top: 10px
       list-style: none
       .rank
-        display: inline-block
+        flex: 0 0 32px
+        text-align: center
         .icon
           display: inline-block
           width: 25px
@@ -73,9 +74,11 @@
           &.icon2
             bg-image('third')
         .text
+          flex: 1
           color: $color-theme
           font-size: $font-size-large
       .content
+        no-wrap()
         display: inline-block
         margin-left: 10px
         .title
@@ -83,6 +86,7 @@
           color: $color-text
           font-size: $font-size-medium
         .desc
+          no-wrap()
           margin-top: 10px
           color: $color-text-d
           font-size: $font-size-medium

@@ -73,7 +73,7 @@
         <p class="singer" v-html="currentSong.singer"></p>
       </div>
       <div class="control">
-        <progress-circle :radius="radius">
+        <progress-circle :radius="radius" class="circle">
           <i :class="miniIconControl" @click.stop.prevent="togglePlaying"></i>
         </progress-circle>
       </div>
@@ -103,7 +103,7 @@
       return {
         playReady: false,
         currentTime: 0,
-        radius: 32,
+        radius: 13,
         currentLyric: null,
         currentLine: 0,
         currentShow: 'cd',
@@ -219,8 +219,8 @@
         } else {
           list = this.sequenceList;
         }
-        this.setPlayList(list);
         this.resetCurrentIndex(list, this.currentSong);
+        this.setPlayList(list);
       },
       resetCurrentIndex (list, song) {
         let index = list.findIndex((item) => {
@@ -581,10 +581,14 @@
           font-size: $font-size-small
           color: $color-text-l
       .control
+        position: relative
         flex: 0 0 48px
         width: 48px
         line-height: 64px
-        .icon-playlist, .icon-play-mini, .icon-pause-mini
+        text-align: center
+        .icon-playlist,.icon-play-mini,.icon-pause-mini
+          display: inline-block
+          text-align: center
           color: $color-theme
           font-size: $font-size-large-x
           vertical-align: middle

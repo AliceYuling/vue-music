@@ -139,7 +139,7 @@
               this.searchResult = this.searchResult.concat(this.getResult(res.data));
               this.totalNum = res.data.song.totalnum;
               this.curNum = res.data.song.curnum;
-              console.log(this.totalNum + ',' + this.curNum);
+              // console.log(this.totalNum + ',' + this.curNum);
             }
           });
         }
