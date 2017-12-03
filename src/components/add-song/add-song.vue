@@ -37,7 +37,9 @@
   import SongList from 'base/songlist/songlist';
   import Suggest from 'components/suggest/suggest';
   import Song from 'common/js/song';
+  import {searchMixin} from 'common/js/mixin';
   export default {
+    mixins: [searchMixin],
     data () {
       return {
         placeholder: '搜索歌曲',
@@ -176,6 +178,7 @@
           width: 100%
           top: 180px
           bottom: 0
+          padding: 0 30px
           overflow: hidden
     .suggest-wrapper
       margin-top: 20px

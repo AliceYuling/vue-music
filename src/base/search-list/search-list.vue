@@ -3,7 +3,7 @@
     <ul class="list">
       <li class="search-item" v-for="item in searchList" @click="addQuery(item)">
         <span class="text">{{item}}</span>
-        <span class="icon-wrapper" @click="deleteOne(item)">
+        <span class="icon-wrapper" @click.stop="deleteOne(item)">
           <i class="icon icon-delete"></i>
         </span>
       </li>
@@ -36,7 +36,7 @@
   @import '~common/style/variable.styl';
   .search-list
     .list
-      padding: 10px 30px
+      padding: 10px 0
       .search-item
         display: flex
         height: 32px

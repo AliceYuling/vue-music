@@ -62,7 +62,7 @@
       </div>
     </div>
     <div class="playlist-wrapper" v-show="showList">
-      <playlist @closePlayList="closePlayList"></playlist>
+      <playlist @closePlayList="closePlayList" ref="playlist" :showPlayList="showList"></playlist>
     </div>
     <div class="mini-player" v-show="!fullScreen" @click="open">
       <div class="mini-image">
@@ -73,8 +73,8 @@
         <p class="singer" v-html="currentSong.singer"></p>
       </div>
       <div class="control">
-        <progress-circle :radius="radius" class="circle">
-          <i :class="miniIconControl" @click.stop.prevent="togglePlaying"></i>
+        <progress-circle :radius="radius" :percent="percent" class="circle">
+          <i :class="miniIconControl" @click.self="togglePlaying"></i>
         </progress-circle>
       </div>
       <div class="control" @click.stop.prevent="showPlayList">
@@ -89,16 +89,16 @@
   import {mapGetters, mapMutations, mapActions} from 'vuex';
   import ProgressBar from 'base/progress-bar/progress-bar';
   import ProgressCircle from 'base/progress-circle/progress-circle';
-  import {getRandomArray} from 'common/js/utils';
   import {playMode} from 'common/js/config.js';
   import Lyric from 'lyric-parser';
   import Scroll from 'base/scroll/scroll';
   import {prefixStyle} from 'common/js/dom';
   import Playlist from 'components/playlist/playlist';
-
+  import {playerMixin} from 'common/js/mixin.js';
   const transform = prefixStyle('transform');
   // const LINE_HIEGHT = 20;
   export default {
+    mixins: [playerMixin],
     data () {
       return {
         playReady: false,
@@ -124,9 +124,6 @@
       percent () {
         return this.currentTime / this.currentSong.duration;
       },
-      iconMode () {
-        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random';
-      },
       ...mapGetters([
         'fullScreen',
         'playList',
@@ -149,9 +146,12 @@
       },
       showPlayList () {
         this.showList = true;
+        this.$refs.playlist.freshList();
+        setTimeout(() => {
+          this.$refs.playlist.scrollToCurrentPlay(this.currentSong);
+        }, 20);    
       },
       closePlayList () {
-        // console.log('close play list');
         this.showList = false;
       },
       togglePlaying () {
@@ -210,24 +210,6 @@
           this.currentLyric.seek();
         }
       },
-      changeMode () {
-        let modeIndex = (this.mode + 1) % 3;
-        this.setPlayMode(modeIndex);
-        let list = null;
-        if (this.mode === playMode.random) {                                      // 随机播放
-          list = getRandomArray(this.playList);
-        } else {
-          list = this.sequenceList;
-        }
-        this.resetCurrentIndex(list, this.currentSong);
-        this.setPlayList(list);
-      },
-      resetCurrentIndex (list, song) {
-        let index = list.findIndex((item) => {
-          return item.id === this.currentSong.id;
-        });
-        this.setCurrentIndex(index);
-      },
       ready () {
         this.playReady = true;
       },
@@ -262,8 +244,6 @@
         return `${min}:${sec}`;
       },
       getLyric () {
-        console.log('getLyric');
-        console.log(this.currentSong);
         this.currentSong.getLyric().then((lyric) => {
           this.currentLyric = new Lyric(lyric, this.handleLyric);
           if (this.playing) {
@@ -348,8 +328,9 @@
     },
     watch: {
       currentSong (newSong, oldSong) {
-        console.log('newSong');
-        console.log(newSong);
+        if (!newSong.id) {
+          return;
+        }
         if (this.playList.length) {
           if (newSong.id === oldSong.id) {
             return;
@@ -399,7 +380,7 @@
         position: absolute
         top: 0
         left: 0
-        width:100%
+        width: 100%
         height: 100%
         z-index: -1
         opacity: 0.6

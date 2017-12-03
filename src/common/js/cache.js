@@ -55,34 +55,24 @@ export function loadPlay () {
 };
 
 export function addPlay (song) {
-  console.log('cache add play');
-  console.log(song);
   // storage.set(PLAY_KEY, []);
-  let emptyArr = [];
-  emptyArr.push(song);
   let latest = storage.get(PLAY_KEY, []);
-  console.log('before latest');
-  console.log(latest);
   let sIndex = latest.findIndex((item) => {
     return song.id === item.id;
   });
 
-  console.log('sIndex=' + sIndex);
-  console.log(latest[sIndex]);
   // 若歌曲不存在于当前播放列表中， 则插入到队列头部
   // 否则删除原本的位置并插入到队列头部
   if (sIndex > 0) {
     latest.splice(sIndex, 1);
   }
 
-  // latest.unshift(song);
-  let latest1 = emptyArr.concat(latest);
-  if (latest1.length > MAX_PLAY) {
-    latest1.pop();
+  latest.unshift(song);
+  if (latest.length > MAX_PLAY) {
+    latest.pop();
   }
 
-  console.log('after latest');
-  console.log(latest1);
-  storage.set(PLAY_KEY, latest1);
-  return latest1;
+  console.log(latest);
+  storage.set(PLAY_KEY, latest);
+  return latest;
 };

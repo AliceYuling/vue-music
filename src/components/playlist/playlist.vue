@@ -1,17 +1,17 @@
 <template>
   <div class="playlist">
     <h1 class="title">
-      <span class="mode-control">
-        <i class="icon" :class="modeCtrl"></i>
+      <span class="mode-control" @click="changeMode">
+        <i class="icon" :class="iconMode"></i>
       </span>
       <span class="text" v-html="modeText"></span>
       <span class="clear" @click="clearList">
         <i class="icon icon-clear"></i>
       </span>
     </h1>
-    <scroll class="song-list-wrapper" :data="sequenceList">
+    <scroll class="song-list-wrapper" :data="sequenceList" ref="songList">
       <ul class="song-list">
-        <li class="song-item" v-for="(item,index) in sequenceList" @click="selectSong(item,index)">
+        <li class="song-item" v-for="(item,index) in sequenceList" @click="selectSong(item,index)" ref="songItem">
           <i class="current" :class="getCurrentIcon(item)"></i>
           <span class="song-name">{{item.name}}</span>
           <span class="like" @click.stop.prevent="toggleLike(index)">
@@ -46,10 +46,11 @@
   import SongList from 'base/songlist/songlist';
   import Scroll from 'base/scroll/scroll';
   import {playMode} from 'common/js/config';
-  import {mapActions, mapGetters} from 'vuex';
+  import {mapActions, mapGetters, mapMutations} from 'vuex';
   import AddSong from 'components/add-song/add-song';
-
+  import {playerMixin} from 'common/js/mixin';
   export default{
+    mixins: [playerMixin],
     components: {
       SongList,
       Scroll,
@@ -60,26 +61,30 @@
         showList: true,
         likeSong: [],
         currentLike: -1,
-        showAdd: false
+        showAdd: false,
       };
     },
+    props: {
+      showPlayList: {
+        Type: Boolean,
+        default: false
+      }
+    },
     computed: {
-      modeCtrl () {
-        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.random ? 'icon-random' : 'icon-loop';
-      },
       modeText () {
         return this.mode === playMode.sequence ? '顺序播放' : this.mode === playMode.random ? '随机播放' : '循环播放';
       },
       ...mapGetters([
         'sequenceList',
         'mode',
-        'currentSong'
+        'currentSong',
+        'playList'
       ])
     },
     methods: {
       selectSong (item, index) {
         this.selectPlay({
-          list: this.playList, 
+          list: this.sequenceList, 
           index
         });
         this.$emit('closePlayList');
@@ -93,8 +98,13 @@
         }
         this.likeSong[index] = !this.likeSong[index];
         console.log(this.likeSong);
+        this.$emit('getFavIcon', index);
       },
       getFavIcon (index) {
+        // console.log(this.likeSong);
+        // console.log(this.likeSong[index]);
+        let cls = this.likeSong[index] ? 'icon-favorite' : 'icon-not-favorite';
+        // console.log('get fav icon' + index + ',' + this.likeSong[index] + ',' + cls);
         return this.likeSong[index] ? 'icon-favorite' : 'icon-not-favorite';
       },
       getCurrentIcon (item) {
@@ -103,6 +113,15 @@
         } else {
           return '';
         }
+      },
+
+      // 滚动到当前播放的歌曲
+      scrollToCurrentPlay (current) {
+        let currentPlay = this.sequenceList.findIndex((item) => {
+          return item.id === current.id;
+        })
+        let currentPlayEl = this.$refs.songItem[currentPlay];
+        this.$refs.songList.scrollToElement(currentPlayEl, 0);
       },
       addSong () {
         console.log('addsong');
@@ -127,18 +146,29 @@
         this.$emit('closePlayList');
         this.likeSong = [];
       },
-      selectSong (item, index) {
-        console.log('select in playlist');
-        this.selectPlay({
-          list: this.sequenceList,
-          index
-        });
+      freshList () {
+        setTimeout(() => {
+          this.$refs.songList.refresh();
+        });  
       },
+      ...mapMutations({
+        'setPlayList': 'SET_PLAY_LIST',
+        'setPlayMode': 'SET_MODE',
+        'setCurrentIndex': 'SET_CURRENT_INDEX'
+      }),
       ...mapActions([
         'selectPlay',
         'clearPlayList',
         'deleteSong'
       ])
+    },
+    watch: {
+      currentSong (newSong, oldSong) {
+        if (newSong.id === oldSong.id || !this.showPlayList) {
+          return;
+        }
+        this.scrollToCurrentPlay(newSong);
+      }
     }
   };
 </script>
@@ -194,6 +224,8 @@
             display: block
             flex: 0 0 40px
             width: 40px
+            .icon-favorite
+              color: $color-theme
           .delete-song
             display: block
             flex: 0 0 40px

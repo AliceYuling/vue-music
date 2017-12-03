@@ -40,10 +40,10 @@
   import {mapGetters} from 'vuex'
   import searchList from 'base/search-list/search-list';
   import Scroll from 'base/scroll/scroll';
-  import {playListMixin} from 'common/js/mixin';
+  import {playListMixin, searchMixin} from 'common/js/mixin';
   const TYPE_SINGER = 2;
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, searchMixin],
     components: {
       SearchBox,
       Suggest,
@@ -75,18 +75,6 @@
           }
           console.log(this.hotKey);
         })
-      },
-      addQuery (item) {
-        this.setQuery(item);
-      },
-      setQuery (query) {
-        this.$refs.searchBox.setQuery(query);
-      },
-      queryChange (query) {
-        this.query = query;
-      },
-      onBlur () {
-        this.$refs.searchBox.blur();
       },
       saveSearch (item) {
         if (item.type === TYPE_SINGER){

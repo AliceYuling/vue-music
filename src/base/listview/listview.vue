@@ -179,6 +179,7 @@
     .list-wrapper
       .list-group
         padding-bottom: 30px
+        font-size: 0
         .group-title
           width: 100%
           height: 28px
@@ -188,10 +189,11 @@
           color: $color-text
           font-size: $font-size-medium
         ul
+          margin-bottom: 0
           .list-group-item
             width: 100%
-            height: 80px
-            line-height: 80px
+            height: 72px
+            line-height: 72px
             .avatar
               display: inline-block
               margin-left: 32px

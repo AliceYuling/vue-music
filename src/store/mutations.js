@@ -32,11 +32,7 @@ const mutations = {
     state.searchHistory = searchHistory;
   },
   [types.SET_PLAY_HISTORY] (state, playHistory) {
-    console.log('in mutations');
-    console.log(playHistory);
     state.playHistory = playHistory.slice();
-    console.log('after mutation');
-    console.log(state.playHistory);
   }
 };
 

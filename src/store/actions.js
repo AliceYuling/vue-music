@@ -137,8 +137,5 @@ export const clearPlayList = function ({commit, state}) {
 
 // 在最近播放列表中添加一首歌曲
 export const savePlayHistory = function ({commit}, song) {
-  console.log('song in actions');
-  console.log(song);
-  // console.log(state.playHistory);
   commit(types.SET_PLAY_HISTORY, cache.addPlay(song));
 };
