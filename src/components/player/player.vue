@@ -55,8 +55,8 @@
           <div class="icon" :class="disableCls">
             <i class="icon-next" @click="next"></i>
           </div>
-          <div class="icon">
-            <i class="icon-favorite"></i>
+          <div class="icon" @click="toggleLike(currentSong)">
+            <i :class="getFavIcon(currentSong)"></i>
           </div>
         </div>
       </div>
@@ -94,11 +94,11 @@
   import Scroll from 'base/scroll/scroll';
   import {prefixStyle} from 'common/js/dom';
   import Playlist from 'components/playlist/playlist';
-  import {playerMixin} from 'common/js/mixin.js';
+  import {playerMixin, favMixin} from 'common/js/mixin.js';
   const transform = prefixStyle('transform');
   // const LINE_HIEGHT = 20;
   export default {
-    mixins: [playerMixin],
+    mixins: [playerMixin, favMixin],
     data () {
       return {
         playReady: false,

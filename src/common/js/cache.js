@@ -4,10 +4,29 @@ const SEARCH_KEY = '__search__';
 const MAX_SEARCH = 15;
 
 const PLAY_KEY = '__play__';
-const MAX_PLAY = 15;
+const MAX_PLAY = 100;
+
+const FAV_KEY = '__fav__';
+const MAX_FAV = 200;
+
+const insertArray = function (list, val, compare, maxLen) {
+  let index = list.findIndex(compare);
+  if (index === 0) {
+    return;
+  }
+  if (index > 0) {
+    list.splice(index, 1);
+  }
+  list.unshift(val);
+  if (list.length > MAX_SEARCH) {
+    list.pop();
+  }
+  return list;
+};
 
 export function saveSearch (query) {
   let list = storage.get(SEARCH_KEY, []);
+  /*
   let sIndex = list.findIndex((item) => {
     return item === query;
   });
@@ -25,6 +44,10 @@ export function saveSearch (query) {
   if (list.length > MAX_SEARCH) {
     list.pop();
   }
+  */
+  list = insertArray(list, query, (item) => {
+    return item === query;
+  }, MAX_SEARCH);
   storage.set(SEARCH_KEY, list);
   return list;
 };
@@ -33,6 +56,7 @@ export function loadSearch () {
   return storage.get(SEARCH_KEY, []);
 };
 
+// 删除一项搜索历史
 export function deleteOne (item) {
   let list = storage.get(SEARCH_KEY, []);
   let index = list.findIndex((elem) => {
@@ -57,6 +81,7 @@ export function loadPlay () {
 export function addPlay (song) {
   // storage.set(PLAY_KEY, []);
   let latest = storage.get(PLAY_KEY, []);
+  /*
   let sIndex = latest.findIndex((item) => {
     return song.id === item.id;
   });
@@ -71,8 +96,39 @@ export function addPlay (song) {
   if (latest.length > MAX_PLAY) {
     latest.pop();
   }
-
-  console.log(latest);
+  */
+  latest = insertArray(latest, song, (item) => {
+    return item.id === song.id;
+  }, MAX_PLAY);
   storage.set(PLAY_KEY, latest);
   return latest;
+};
+
+// 对收藏列表的操作
+export function loadFav () {
+  return storage.get(FAV_KEY, []);
+};
+
+export function addFav (song) {
+  let favList = storage.get(FAV_KEY, []);
+
+  favList = insertArray(favList, song, (item) => {
+    return item.id === song.id;
+  }, MAX_FAV);
+
+  storage.set(FAV_KEY, favList);
+  return favList;
+};
+
+export function deleteFav (song) {
+  let favList = storage.get(FAV_KEY, []);
+
+  let fIndex = favList.findIndex((item) => {
+    return item.id === song.id;
+  });
+
+  favList.splice(fIndex, 1);
+
+  storage.set(FAV_KEY, favList);
+  return favList;
 };

@@ -1,4 +1,4 @@
-import {mapGetters} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
 import {getRandomArray} from 'common/js/utils';
 import {playMode} from 'common/js/config.js';
 
@@ -68,5 +68,41 @@ export const searchMixin = {
     onBlur () {
       this.$refs.searchBox.blur();
     }
+  }
+};
+
+export const favMixin = {
+  computed: {
+    ...mapGetters([
+      'favoriteList'
+    ])
+  },
+  methods: {
+    toggleLike (item) {
+      if (this.isFavorite(item)) {
+        this.deleteFav(item);
+      } else {
+        this.addFav(item);
+      }
+    },
+    getFavIcon (song) {
+      let index = this.favoriteList.findIndex((item) => {
+        return item.id === song.id;
+      });
+      return index < 0 ? 'icon-not-favorite' : 'icon-favorite';
+    },
+    isFavorite (song) {
+      let index = this.favoriteList.findIndex((item) => {
+        return item.id === song.id;
+      });
+      if (index < 0) {
+        return false;
+      }
+      return true;
+    },
+    ...mapActions([
+      'addFav',
+      'deleteFav'
+    ])
   }
 };

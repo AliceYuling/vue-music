@@ -14,8 +14,8 @@
         <li class="song-item" v-for="(item,index) in sequenceList" @click="selectSong(item,index)" ref="songItem">
           <i class="current" :class="getCurrentIcon(item)"></i>
           <span class="song-name">{{item.name}}</span>
-          <span class="like" @click.stop.prevent="toggleLike(index)">
-            <i class="icon" :class="getFavIcon(index)"></i>
+          <span class="like" @click.stop.prevent="toggleLike(item)">
+            <i class="icon" :class="getFavIcon(item)"></i>
           </span>
           <span class="delete-song" @click.stop.prevent="deleteOne(item,index)">
             <i class="icon icon-delete"></i>
@@ -48,9 +48,9 @@
   import {playMode} from 'common/js/config';
   import {mapActions, mapGetters, mapMutations} from 'vuex';
   import AddSong from 'components/add-song/add-song';
-  import {playerMixin} from 'common/js/mixin';
+  import {playerMixin, favMixin} from 'common/js/mixin';
   export default{
-    mixins: [playerMixin],
+    mixins: [playerMixin, favMixin],
     components: {
       SongList,
       Scroll,
@@ -59,7 +59,6 @@
     data () {
       return {
         showList: true,
-        likeSong: [],
         currentLike: -1,
         showAdd: false,
       };
@@ -89,24 +88,6 @@
         });
         this.$emit('closePlayList');
       },
-      toggleLike (index) {
-        if (!this.likeSong.length) {
-          let len = this.sequenceList.length;
-          for (let i = 0; i < len; i++) {
-            this.likeSong.push(false);
-          }
-        }
-        this.likeSong[index] = !this.likeSong[index];
-        console.log(this.likeSong);
-        this.$emit('getFavIcon', index);
-      },
-      getFavIcon (index) {
-        // console.log(this.likeSong);
-        // console.log(this.likeSong[index]);
-        let cls = this.likeSong[index] ? 'icon-favorite' : 'icon-not-favorite';
-        // console.log('get fav icon' + index + ',' + this.likeSong[index] + ',' + cls);
-        return this.likeSong[index] ? 'icon-favorite' : 'icon-not-favorite';
-      },
       getCurrentIcon (item) {
         if (this.currentSong.id === item.id) {
           return 'icon-play'
@@ -114,7 +95,6 @@
           return '';
         }
       },
-
       // 滚动到当前播放的歌曲
       scrollToCurrentPlay (current) {
         let currentPlay = this.sequenceList.findIndex((item) => {

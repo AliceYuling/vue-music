@@ -7,6 +7,7 @@ import Search from 'components/search/search';
 import SingerDetail from 'components/singer-detail/singer-detail';
 import DiscDetail from 'components/disc-detail/disc-detail.vue';
 import RankDetail from 'components/rank-detail/rank-detail.vue';
+import User from 'components/user/user.vue';
 import 'common/style/index.styl';
 
 Vue.use(Router);
@@ -52,6 +53,11 @@ export default new Router({
         path: ':id',
         component: SingerDetail
       }]
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: User
     }
   ]
 });

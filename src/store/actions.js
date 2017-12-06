@@ -139,3 +139,12 @@ export const clearPlayList = function ({commit, state}) {
 export const savePlayHistory = function ({commit}, song) {
   commit(types.SET_PLAY_HISTORY, cache.addPlay(song));
 };
+
+// 对收藏歌曲的操作
+export const addFav = function ({commit, state}, song) {
+  commit(types.SET_FAVORITE_LIST, cache.addFav(song));
+};
+
+export const deleteFav = function ({commit, state}, song) {
+  commit(types.SET_FAVORITE_LIST, cache.deleteFav(song));
+};
