@@ -23,6 +23,7 @@ export const selectPlay = function ({commit, state}, {list, index}) {
 };
 
 export const randomPlay = function ({commit}, {list}) {
+  console.log(list);
   commit(types.SET_MODE, playMode.random);
   commit(types.SET_SEQUENCE_LIST, list);
   let randomList = getRandomArray(list);

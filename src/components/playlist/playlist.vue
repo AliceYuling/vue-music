@@ -119,12 +119,10 @@
       },
       deleteOne (item, index) {
         this.deleteSong(item);
-        this.likeSong.splice(index, 1);
       },
       clearList () {
         this.clearPlayList();
         this.$emit('closePlayList');
-        this.likeSong = [];
       },
       freshList () {
         setTimeout(() => {

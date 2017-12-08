@@ -1,18 +1,28 @@
 <template>
-  <div class="user">
+  <div class="user" ref="user">
     <div class="back" @click="back">
       <i class="icon icon-back"></i>
     </div>
     <div class="switch">
         <span class="switch-latest" :class="{'current':!isCurrent}" @click="toggleCurrent">最近播放</span>
-        <span class="switch-history" :class="{'current':isCurrent}" @click="toggleCurrent">收藏歌单</span>
+        <span class="switch-history" :class="{'current':isCurrent}" @click="toggleCurrent">收藏列表</span>
       </div>
-      <div class="refer-content">
-        <scroll class="latest-wrapper" v-show="!isCurrent" :data="playHistory">
+      <div class="refer-content" @click="randomPlay">
+        <div class="random">
+          <div class="random-wrapper">
+            <span class="icon">
+              <i class="icon-random"></i>
+            </span>
+            <span class="text">
+              随机播放全部
+            </span>
+          </div>
+        </div>
+        <scroll class="latest-wrapper" v-show="!isCurrent" :data="playHistory" ref="latest">
           <song-list :songs="playHistory" @select="selectSong"></song-list>
         </scroll>
-        <scroll class="favorite-wrapper" v-show="isCurrent" :data="favoriteList">
-          <song-list :songs="favoriteList"></song-list>
+        <scroll class="favorite-wrapper" v-show="isCurrent" :data="favoriteList" ref="favorite">
+          <song-list :songs="favoriteList" @select="selectSong"></song-list>
         </scroll>
       </div>
   </div>
@@ -21,8 +31,11 @@
 <script type="ecmascript=6">
   import SongList from 'base/songlist/songlist';
   import Scroll from 'base/scroll/scroll';
-  import {mapGetters} from 'vuex';
+  import Song from 'common/js/song';
+  import {mapGetters, mapActions} from 'vuex';
+  import {playListMixin} from 'common/js/mixin';
   export default {
+    mixins: [playListMixin],
     data () {
       return {
         isCurrent: false
@@ -30,6 +43,7 @@
     },
     computed: {
       ...mapGetters([
+        'playList',
         'playHistory',
         'favoriteList'
       ])
@@ -43,9 +57,30 @@
       },
       selectSong (item, index) {
         this.insertSong(new Song(item));
-        // this.savePlayHistory(item);
-        this.saveSearchHistory(item.name);
-      }
+      },
+      handlePlayList (playList) {
+        const bottom = playList.length > 0 ? '63px' : '';
+        this.$refs.user.style.bottom = bottom;
+        this.$refs.latest.refresh();
+        this.$refs.favorite.refresh();
+      },
+      randomPlay () {
+        let list = this.isCurrent ? this.favoriteList : this.playHistory;
+        if (list.length === 0) {
+          return;
+        }
+        list = list.map((song) => {
+          return new Song(song);
+        });
+        this.randomPlay({
+          list
+        });
+        console.log('randomPlay');
+      },
+      ...mapActions([
+        'insertSong',
+        'randomPlay'
+      ])
     },
     components: {
       SongList,
@@ -96,16 +131,30 @@
           color: $color-text
     .refer-content
       overflow: hidden
+      .random
+        .random-wrapper
+          margin: 16px auto
+          width: 140px
+          height: 32px
+          line-height: 32px
+          border: 1px solid $color-theme
+          border-radius: 6px
+          text-align: center
+          .icon
+            color: $color-theme
+          .text
+            color: $color-theme
+            font-size: $font-size-medium
       .latest-wrapper
         position: fixed
         width: 100%
-        top: 80px
+        top: 120px
         bottom: 0
         overflow: hidden
       .favorite-wrapper
         position: fixed
         width: 100%
-        top: 80px
+        top: 120px
         bottom: 0
         overflow: hidden
 </style>
