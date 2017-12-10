@@ -25,26 +25,9 @@ const insertArray = function (list, val, compare, maxLen) {
 };
 
 export function saveSearch (query) {
+  console.log('savesearch');
   let list = storage.get(SEARCH_KEY, []);
-  /*
-  let sIndex = list.findIndex((item) => {
-    return item === query;
-  });
 
-  // console.log('sIndex=' + sIndex);
-  // 当前搜索在历史中是第一位，则什么都不做
-  if (sIndex === 0) {
-    list = list.slice();
-  } else {
-    list.unshift(query);
-    if (sIndex > 0) {
-      list.splice(sIndex + 1, 1);
-    }
-  }
-  if (list.length > MAX_SEARCH) {
-    list.pop();
-  }
-  */
   list = insertArray(list, query, (item) => {
     return item === query;
   }, MAX_SEARCH);
@@ -79,24 +62,10 @@ export function loadPlay () {
 };
 
 export function addPlay (song) {
-  // storage.set(PLAY_KEY, []);
+  console.log('addplay');
   let latest = storage.get(PLAY_KEY, []);
-  /*
-  let sIndex = latest.findIndex((item) => {
-    return song.id === item.id;
-  });
-
-  // 若歌曲不存在于当前播放列表中， 则插入到队列头部
-  // 否则删除原本的位置并插入到队列头部
-  if (sIndex > 0) {
-    latest.splice(sIndex, 1);
-  }
-
-  latest.unshift(song);
-  if (latest.length > MAX_PLAY) {
-    latest.pop();
-  }
-  */
+  console.log('latest');
+  console.log(latest);
   latest = insertArray(latest, song, (item) => {
     return item.id === song.id;
   }, MAX_PLAY);

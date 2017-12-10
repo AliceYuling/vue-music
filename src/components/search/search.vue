@@ -82,7 +82,7 @@
         } else {
           this.saveSearchHistory(item.name);
         }
-        this.savePlayHistory(item);
+        this.insertSong(item);
       },
       handlePlayList (playList) {
         const bottom = playList.length > 0 ? '63px' : '';
@@ -93,7 +93,8 @@
         'saveSearchHistory',
         'deleteOneHistory',
         'clearHistory',
-        'savePlayHistory'
+        'savePlayHistory',
+        'insertSong'
       ])
     },
     watch: {

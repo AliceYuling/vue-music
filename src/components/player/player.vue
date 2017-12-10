@@ -309,7 +309,7 @@
             opacity = 1;
           } else {
             width = -window.innerWidth;
-            opacity = 1;
+            opacity = 0;
           }
         }
         this.$refs.lyricList.$el.style[transform] = `translate3d(${width}px,0,0)`;
