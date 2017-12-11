@@ -4,27 +4,27 @@
       <i class="icon icon-back"></i>
     </div>
     <div class="switch">
-        <span class="switch-latest" :class="{'current':!isCurrent}" @click="toggleCurrent">最近播放</span>
-        <span class="switch-history" :class="{'current':isCurrent}" @click="toggleCurrent">收藏列表</span>
+      <span class="switch-latest" :class="{'current':!isCurrent}" @click="toggleCurrent">最近播放</span>
+      <span class="switch-history" :class="{'current':isCurrent}" @click="toggleCurrent">收藏列表</span>
+    </div>
+    <div class="random" @click="randomPlay">
+      <div class="random-wrapper">
+        <span class="icon">
+          <i class="icon-random"></i>
+        </span>
+        <span class="text">
+          随机播放全部
+        </span>
       </div>
-      <div class="refer-content" @click="randomPlay">
-        <div class="random">
-          <div class="random-wrapper">
-            <span class="icon">
-              <i class="icon-random"></i>
-            </span>
-            <span class="text">
-              随机播放全部
-            </span>
-          </div>
-        </div>
-        <scroll class="latest-wrapper" v-show="!isCurrent" :data="playHistory" ref="latest">
-          <song-list :songs="playHistory" @select="selectSong"></song-list>
-        </scroll>
-        <scroll class="favorite-wrapper" v-show="isCurrent" :data="favoriteList" ref="favorite">
-          <song-list :songs="favoriteList" @select="selectSong"></song-list>
-        </scroll>
-      </div>
+    </div>
+    <div class="refer-content" ref="refer">
+      <scroll class="latest-wrapper" v-show="!isCurrent" :data="playHistory" ref="latest">
+        <song-list :songs="playHistory" @select="selectSong"></song-list>
+      </scroll>
+      <scroll class="favorite-wrapper" v-show="isCurrent" :data="favoriteList" ref="favorite">
+        <song-list :songs="favoriteList" @select="selectSong"></song-list>
+      </scroll>
+    </div>
   </div>
 </template>
 
@@ -60,11 +60,12 @@
       },
       handlePlayList (playList) {
         const bottom = playList.length > 0 ? '63px' : '';
-        this.$refs.user.style.bottom = bottom;
+        this.$refs.refer.style.bottom = bottom;
         this.$refs.latest.refresh();
         this.$refs.favorite.refresh();
       },
       randomPlay () {
+        console.log('randomplay in user');
         let list = this.isCurrent ? this.favoriteList : this.playHistory;
         if (list.length === 0) {
           return;
@@ -75,7 +76,7 @@
         this.randomPlay({
           list
         });
-        console.log('randomPlay');
+        // console.log('randomPlay');
       },
       ...mapActions([
         'insertSong',
@@ -96,9 +97,10 @@
     top: 0
     bottom: 0
     width: 100%
-    z-index: 200
+    z-index: 101
     background: $color-background
     color: $color-text
+    overflow: hidden
     .back
       position: absolute
       left: 10px
@@ -129,32 +131,30 @@
         &.current
           background: $color-highlight-background
           color: $color-text
+    .random
+      width: 100%
+      .random-wrapper
+        margin: 16px auto 16px auto
+        width: 140px
+        height: 32px
+        line-height: 32px
+        border: 1px solid $color-theme
+        border-radius: 6px
+        text-align: center
+        .icon
+          color: $color-theme
+        .text
+          color: $color-theme
+          font-size: $font-size-medium
     .refer-content
-      overflow: hidden
-      .random
-        .random-wrapper
-          margin: 16px auto
-          width: 140px
-          height: 32px
-          line-height: 32px
-          border: 1px solid $color-theme
-          border-radius: 6px
-          text-align: center
-          .icon
-            color: $color-theme
-          .text
-            color: $color-theme
-            font-size: $font-size-medium
+      position: fixed
+      width: 100%
+      top: 120px
+      bottom: 0
       .latest-wrapper
-        position: fixed
-        width: 100%
-        top: 120px
-        bottom: 0
+        height: 100%
         overflow: hidden
       .favorite-wrapper
-        position: fixed
-        width: 100%
-        top: 120px
-        bottom: 0
+        height: 100%
         overflow: hidden
 </style>

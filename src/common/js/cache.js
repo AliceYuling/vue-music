@@ -10,7 +10,10 @@ const FAV_KEY = '__fav__';
 const MAX_FAV = 200;
 
 const insertArray = function (list, val, compare, maxLen) {
+  console.log('list in insertArray');
+  console.log(list);
   let index = list.findIndex(compare);
+  console.log(index);
   if (index === 0) {
     return;
   }
@@ -21,6 +24,7 @@ const insertArray = function (list, val, compare, maxLen) {
   if (list.length > MAX_SEARCH) {
     list.pop();
   }
+  console.log(list);
   return list;
 };
 
@@ -69,6 +73,7 @@ export function addPlay (song) {
   latest = insertArray(latest, song, (item) => {
     return item.id === song.id;
   }, MAX_PLAY);
+  console.log(latest);
   storage.set(PLAY_KEY, latest);
   return latest;
 };

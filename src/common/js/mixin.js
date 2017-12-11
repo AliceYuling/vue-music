@@ -1,4 +1,4 @@
-import {mapGetters, mapActions} from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 import {getRandomArray} from 'common/js/utils';
 import {playMode} from 'common/js/config.js';
 
@@ -28,6 +28,12 @@ export const playListMixin = {
 
 export const playerMixin = {
   computed: {
+    ...mapGetters([
+      'mode',
+      'currentSong',
+      'playList',
+      'sequenceList'
+    ]),
     iconMode () {
       return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random';
     }
@@ -42,19 +48,31 @@ export const playerMixin = {
       } else {
         list = this.sequenceList;
       }
+      console.log('list in changemode');
+      console.log(list);
       this.resetCurrentIndex(list, this.currentSong);
       this.setPlayList(list);
     },
     resetCurrentIndex (list, song) {
       let index = list.findIndex((item) => {
-        return item.id === this.currentSong.id;
+        return item.id === song.id;
       });
       this.setCurrentIndex(index);
-    }
+    },
+    ...mapMutations([
+      'setCurrentIndex',
+      'setPlayMode',
+      'setPlayList'
+    ])
   }
 };
 
 export const searchMixin = {
+  data () {
+    return {
+      query: ''
+    };
+  },
   methods: {
     queryChange (query) {
       this.query = query;

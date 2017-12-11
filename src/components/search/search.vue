@@ -126,6 +126,7 @@
       .shortcut-wrapper
         padding-left: 20px
         padding-right: 16px
+        overflow: hidden
         .hotkey-wrapper
           margin-top: 24px
           .title

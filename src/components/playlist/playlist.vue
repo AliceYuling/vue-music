@@ -10,8 +10,8 @@
       </span>
     </h1>
     <scroll class="song-list-wrapper" :data="sequenceList" ref="songList">
-      <ul class="song-list">
-        <li class="song-item" v-for="(item,index) in sequenceList" @click="selectSong(item,index)" ref="songItem">
+      <transition-group class="song-list" tag="ul" name="playlist">
+        <li class="song-item" v-for="(item,index) in sequenceList" @click="selectSong(item,index)" ref="songItem" :key="item.id">
           <i class="current" :class="getCurrentIcon(item)"></i>
           <span class="song-name">{{item.name}}</span>
           <span class="like" @click.stop.prevent="toggleLike(item)">
@@ -21,7 +21,7 @@
             <i class="icon icon-delete"></i>
           </span>
         </li>
-      </ul>
+      </transition-group>
     </scroll>
     <div class="btn">
       <div class="btnWrapper">
@@ -190,6 +190,12 @@
           line-height: 36px
           font-size: $font-size-medium
           color: $color-text-l
+          transition: all 0.4s
+          &.playlist-enter, &.playlist-leave-to
+            height: 0
+            opacity: 0
+          &.playlist-enter-active, &.playlist-leave-to
+            transition: all 0.4s linear
           .current
             flex: 0 0 20px
             display: inline-block

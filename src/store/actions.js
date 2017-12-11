@@ -23,6 +23,7 @@ export const selectPlay = function ({commit, state}, {list, index}) {
 };
 
 export const randomPlay = function ({commit}, {list}) {
+  console.log('randomPlay');
   console.log(list);
   commit(types.SET_MODE, playMode.random);
   commit(types.SET_SEQUENCE_LIST, list);
@@ -35,10 +36,13 @@ export const randomPlay = function ({commit}, {list}) {
 
 // 添加歌曲到播放列表中
 export const insertSong = function ({commit, state}, song) {
+  console.log('playlist in insertsong');
   console.log(state.playList);
-  let pList = state.playList.slice(0);
+  console.log(state.sequenceList);
+  let pList = state.playList.slice();
   let curIndex = state.currentIndex;
-  let seqList = state.sequenceList.slice(0);
+  let seqList = state.sequenceList.slice();
+  console.log(seqList);
   // console.log('pList');
   // console.log(pList);
   // let curSong = state.playList[curIndex] || {};
@@ -72,6 +76,7 @@ export const insertSong = function ({commit, state}, song) {
     }
   }
 
+  console.log(seqList);
   commit(types.SET_PLAY_LIST, pList);
   commit(types.SET_SEQUENCE_LIST, seqList);
   commit(types.SET_CURRENT_INDEX, curIndex);
