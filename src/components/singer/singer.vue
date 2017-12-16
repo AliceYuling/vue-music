@@ -90,7 +90,6 @@
       },
       handlePlayList (playList) {
         const bottom = playList.length > 0 ? '63px' : '';
-        // console.log('bottom:' + bottom);
         this.$refs.singer.style.bottom = bottom;
         this.$refs.listview.refresh();
       },

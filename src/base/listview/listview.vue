@@ -60,7 +60,7 @@
       },
       fixedTitle () {
         if (this.posY > 0) {
-          console.log('this.posY > 0');
+          // console.log('this.posY > 0');
           return '';
         }
         return this.data[this.currentIndex] ? this.data[this.currentIndex].title : '';
@@ -110,7 +110,7 @@
       _calHeight () {
         let listgroup = this.$refs.listgroup;
         let height = 0;
-        console.log('listgroup:' + this.$refs.listgroup);
+
         this.listHeight.push(height);
         for (let i = 0; i < listgroup.length; i++) {
           height += listgroup[i].clientHeight;

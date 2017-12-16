@@ -7,7 +7,7 @@
       <span class="switch-latest" :class="{'current':!isCurrent}" @click="toggleCurrent">最近播放</span>
       <span class="switch-history" :class="{'current':isCurrent}" @click="toggleCurrent">收藏列表</span>
     </div>
-    <div class="random" @click="randomPlay">
+    <div class="random" @click="random">
       <div class="random-wrapper">
         <span class="icon">
           <i class="icon-random"></i>
@@ -64,7 +64,7 @@
         this.$refs.latest.refresh();
         this.$refs.favorite.refresh();
       },
-      randomPlay () {
+      random () {
         console.log('randomplay in user');
         let list = this.isCurrent ? this.favoriteList : this.playHistory;
         if (list.length === 0) {

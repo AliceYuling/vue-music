@@ -3,6 +3,7 @@ function getRandom (m, n) {
 }
 
 export function getRandomArray (arr) {
+  console.log('getRandomArray');
   let _arr = arr.slice();
   for (let i = 0; i < arr.length; i++) {
     let j = getRandom(0, i);

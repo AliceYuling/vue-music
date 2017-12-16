@@ -21,11 +21,11 @@ const insertArray = function (list, val, compare, maxLen) {
     list.splice(index, 1);
   }
   list.unshift(val);
-  if (list.length > MAX_SEARCH) {
+  if (list.length > maxLen) {
     list.pop();
   }
+  console.log('list');
   console.log(list);
-  return list;
 };
 
 export function saveSearch (query) {
@@ -70,7 +70,7 @@ export function addPlay (song) {
   let latest = storage.get(PLAY_KEY, []);
   console.log('latest');
   console.log(latest);
-  latest = insertArray(latest, song, (item) => {
+  insertArray(latest, song, (item) => {
     return item.id === song.id;
   }, MAX_PLAY);
   console.log(latest);

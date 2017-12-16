@@ -34,8 +34,8 @@
       ])
     },
     created () {
-      console.log('created;' + this.disc.imgurl);
-      console.log(this.disc);
+      // console.log('created;' + this.disc.imgurl);
+      // console.log(this.disc);
       this._getDiscDetail(this.disc.dissid);
     },
     methods: {
